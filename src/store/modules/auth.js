@@ -12,13 +12,10 @@ const getters = {
 
 const actions = {
     async retrieveToken({ commit }, credentials) {
-        const headers = {
-            'Content-Type': 'application/json'
-        }
         const res = await axios.post(`${state.url}/api/auth/login`, {
             email: credentials.email,
             password: credentials.password,
-        }, headers)
+        })
 
         console.log(res)
 
