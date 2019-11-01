@@ -2,11 +2,13 @@ import axios from 'axios'
 
 const state = {
     user: {},
+    loading: false,
     access_token: null,
     url: 'https://sthenos.herokuapp.com'
 }
 
 const getters = {
+    loading: state => state.loading,
     loggedIn: state => state.access_token !== null,
     getUser: state => state.user,
 }
@@ -33,14 +35,19 @@ const actions = {
      * @return void
      */
     async retrieveToken({ commit }, credentials) {
-        const res = await axios.post(`${state.url}/api/auth/login`, {
-            email: credentials.email,
-            password: credentials.password,
-        })
-
-        localStorage.setItem('access_token', res.data.access_token)
-        console.log('You have logged in successfully!', res.data)
-        commit('storeToken', res.data.access_token)
+        try {
+            state.loading = true
+            const res = await axios.post(`${state.url}/api/auth/login`, {
+                email: credentials.email,
+                password: credentials.password,
+            })
+            localStorage.setItem('access_token', res.data.access_token)
+            console.log('You have logged in successfully!', res.data)
+            commit('storeToken', res.data.access_token)
+        } catch (err) {
+            state.loading = false
+            console.log(err)
+        }
     },
 
     /**
@@ -50,6 +57,7 @@ const actions = {
      */
     async destroyToken({ commit }) {
         try {
+            state.loading = true
             const res = await axios.post(`${state.url}/api/auth/logout`, {}, {
                 headers: { 'Authorization': `Bearer ${state.access_token}` }
             })
@@ -74,8 +82,14 @@ const actions = {
 }
 
 const mutations = {
-    storeToken: (state, access_token) => state.access_token = access_token,
-    deleteToken: state => state.access_token = null,
+    storeToken: (state, access_token) => {
+        state.access_token = access_token
+        state.loading = false
+    },
+    deleteToken: state => {
+        state.access_token = null
+        state.loading = false
+    },
     storeUser: (state, user) => state.user = user, 
 }
 
