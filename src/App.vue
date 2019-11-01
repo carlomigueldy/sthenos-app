@@ -1,14 +1,29 @@
 <template>
-  <div>
-    <v-app>
-      <v-content>
-        <v-container fluid>
-          <router-link to="/">Home</router-link> |
-          <router-link to="/about">About</router-link>
-
-          <router-view/>
-        </v-container>
-      </v-content>
-    </v-app>
-  </div>
+  <v-app>
+    <router-view/>
+    
+    <v-overlay :value="loading">
+      <v-progress-circular 
+        indeterminate size="64">
+      </v-progress-circular>
+    </v-overlay>
+  </v-app>
 </template>
+
+<script>
+import { mapActions, mapGetters } from 'vuex'
+
+export default {
+  computed: mapGetters([
+    'loading'
+  ]),
+  
+  methods: mapActions([
+      'checkToken',
+  ]),
+  
+  created() {
+    this.checkToken()
+  },
+}
+</script>

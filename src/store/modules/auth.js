@@ -1,4 +1,5 @@
 import axios from 'axios'
+// import router from '../../router'
 
 const state = {
     user: {},
@@ -22,9 +23,10 @@ const actions = {
      * 
      * @return void
      */
-    checkToken({ commit }) {
+    checkToken({ commit, dispatch }) {
         const access_token = localStorage.getItem('access_token')
-        if(access_token !== null)
+        if(access_token !== null) 
+            dispatch('fetchUser', access_token)
             commit('storeToken', access_token)
     },
 
@@ -44,9 +46,11 @@ const actions = {
             localStorage.setItem('access_token', res.data.access_token)
             console.log('You have logged in successfully!', res.data)
             commit('storeToken', res.data.access_token)
+            return true
         } catch (err) {
             state.loading = false
             console.log(err)
+            return false
         }
     },
 
@@ -74,14 +78,22 @@ const actions = {
      * 
      * @return void
      */
-    async authenticatedUser({ commit }) {
-        const res = await axios.post(`${state.url}/api/auth/me`)
+    async fetchUser({ commit }, access_token) {
+        state.loading = true
+        const res = await axios.post(`${state.url}/api/auth/me`, {}, { 
+            headers: { 'Authorization': `Bearer ${access_token}` } 
+        })
+
         console.log('The authenticated user is fetched.', res.data)
         commit('storeUser', res.data)
     },
 }
 
 const mutations = {
+    storeUser: (state, user) => {
+        state.user = user
+        state.loading = false
+    },
     storeToken: (state, access_token) => {
         state.access_token = access_token
         state.loading = false
@@ -90,7 +102,6 @@ const mutations = {
         state.access_token = null
         state.loading = false
     },
-    storeUser: (state, user) => state.user = user, 
 }
 
 export default {

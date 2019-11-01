@@ -1,20 +1,57 @@
 <template>
     <v-app-bar
-        color="deep-purple accent-4"
-        dark>
-        <v-app-bar-nav-icon></v-app-bar-nav-icon>
-
-        <v-toolbar-title>Page title</v-toolbar-title>
+        dark
+        color="primary">
+        <v-toolbar-title> 
+            Sthenos Shop
+        </v-toolbar-title>
 
         <v-spacer></v-spacer>
-
-        <v-btn icon>
-        <v-icon>mdi-heart</v-icon>
+        
+        <v-btn 
+            v-if="!loggedIn"
+            @click="login()"
+            text>
+            Login
         </v-btn>
-
-        <v-btn icon>
-        <v-icon>mdi-magnify</v-icon>
-        </v-btn>
+        <div v-else>
+            <span>Welcome {{ getUser.name }}</span>
+            <v-btn 
+                :loading="loading"
+                @click="logout()"
+                text>
+                Logout
+            </v-btn>
+        </div>
 
     </v-app-bar>
 </template>
+
+<script>
+import { mapActions, mapGetters } from 'vuex'
+
+export default {
+    computed: mapGetters([
+        'loggedIn', 
+        'loading',
+        'getUser',
+    ]),
+    
+    methods: {
+        /**
+         * Redirect to login view.
+         */
+        login() {
+            this.$router.push('/login')
+        },
+
+        logout() {
+            this.destroyToken()
+        },
+
+        ...mapActions([
+            'destroyToken',
+        ])
+    },
+}
+</script>
