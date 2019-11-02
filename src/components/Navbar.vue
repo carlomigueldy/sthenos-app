@@ -1,27 +1,46 @@
 <template>
     <v-app-bar
+        fixed
         dark
-        color="primary">
-        <v-toolbar-title> 
+        color="black">
+        <v-toolbar-title 
+            class="my-home"
+            @click="home()"> 
             Sthenos Shop
         </v-toolbar-title>
 
         <v-spacer></v-spacer>
         
-        <v-btn 
-            v-if="!loggedIn"
-            @click="login()"
-            text>
-            Login
-        </v-btn>
-        <div v-else>
-            <span>Welcome {{ getUser.name }}</span>
+        <div v-if="!loggedIn">
             <v-btn 
-                :loading="loading"
-                @click="logout()"
+                @click="register()"
                 text>
-                Logout
+                Register
             </v-btn>
+            <v-btn 
+                @click="login()"
+                text>
+                Login
+            </v-btn>
+        </div>
+        <div v-else>
+            <v-menu offset-y>
+                <template v-slot:activator="{ on }">
+                    <v-btn
+                    icon
+                    v-on="on">
+                    <v-icon>mdi-dots-vertical</v-icon>
+                    </v-btn>
+                </template>
+                <v-list>
+                    <v-list-item
+                    @click="logout()">
+                    <v-list-item-title>
+                        Logout
+                    </v-list-item-title>
+                    </v-list-item>
+                </v-list>
+            </v-menu>
         </div>
 
     </v-app-bar>
@@ -39,12 +58,28 @@ export default {
     
     methods: {
         /**
+         * Redirect to home/index page.
+         */
+        home() {
+            this.$router.push('/').catch(() => {})
+        },
+        
+        /**
+         * Redirect to register view.
+         */
+        register() {
+            this.$router.push({ name: 'register' }).catch(() => {})
+        },
+        /**
          * Redirect to login view.
          */
         login() {
-            this.$router.push('/login')
+            this.$router.push({ name: 'login' }).catch(() => {})
         },
 
+        /**
+         * Logs out the user.
+         */
         logout() {
             this.destroyToken()
         },
@@ -55,3 +90,9 @@ export default {
     },
 }
 </script>
+
+<style>
+.my-home {
+    cursor: pointer;
+}
+</style>

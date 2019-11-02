@@ -1,5 +1,7 @@
 <template>
   <v-app>
+    <Navbar />
+    
     <router-view/>
     
     <v-overlay :value="loading">
@@ -12,8 +14,13 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import Navbar from './components/Navbar'
 
 export default {
+  components: {
+    Navbar,
+  },
+  
   computed: mapGetters([
     'loading'
   ]),

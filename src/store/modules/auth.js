@@ -1,5 +1,5 @@
 import axios from 'axios'
-// import router from '../../router'
+import router from '../../router'
 
 const state = {
     user: {},
@@ -15,6 +15,31 @@ const getters = {
 }
 
 const actions = {
+    /**
+     * Register a user.
+     * 
+     * @return void
+     */
+    async registerUser({ dispatch }, form) {
+        state.loading = true
+        try {
+            const res = await axios.post(`${state.url}/api/auth/register`, {
+                name: form.name,
+                email: form.email,
+                password: form.password,
+                password_confirmation: form.password_confirmation,
+            })
+    
+            console.log('User registered', res)
+            dispatch('retrieveToken', {
+                email: form.email,
+                password: form.password,
+            })
+        } catch (err) {
+            state.loading = false
+            console.log(err.response)
+        }
+    },
     /**
      * Checks if an access token is
      * stored in the local storage.
@@ -46,6 +71,7 @@ const actions = {
             localStorage.setItem('access_token', res.data.access_token)
             console.log('You have logged in successfully!', res.data)
             commit('storeToken', res.data.access_token)
+            router.push('/')
             return true
         } catch (err) {
             state.loading = false

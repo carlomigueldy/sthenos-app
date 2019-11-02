@@ -1,7 +1,6 @@
 <template>
   <div>
-    <v-card 
-      class="elevation-0">
+    <v-card>
       <v-card-title>
         Sthenos Login
       </v-card-title>
@@ -26,8 +25,9 @@
         </div>
         <div v-else>
           <v-btn 
+          class="font-weight-black"
           block
-          color="primary"
+          outlined
           type="submit"
           @click="login">
             Login
