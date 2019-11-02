@@ -33,11 +33,12 @@
                     </v-btn>
                 </template>
                 <v-list>
+                    <v-list-item>
+                        {{ getUser.name }}
+                    </v-list-item>
                     <v-list-item
                     @click="logout()">
-                    <v-list-item-title>
                         Logout
-                    </v-list-item-title>
                     </v-list-item>
                 </v-list>
             </v-menu>
