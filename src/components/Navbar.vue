@@ -11,7 +11,7 @@
 
         <v-spacer></v-spacer>
         
-        <div v-if="!loggedIn">
+        <div v-if="!authLoggedIn">
             <v-btn 
                 @click="register()"
                 text>
@@ -34,7 +34,7 @@
                 </template>
                 <v-list>
                     <v-list-item>
-                        {{ getUser.name }}
+                        {{ authGetUser.name }}
                     </v-list-item>
                     <v-list-item
                     @click="logout()">
@@ -52,9 +52,9 @@ import { mapActions, mapGetters } from 'vuex'
 
 export default {
     computed: mapGetters([
-        'loggedIn', 
-        'loading',
-        'getUser',
+        'authLoggedIn', 
+        'authLoading',
+        'authGetUser',
     ]),
     
     methods: {

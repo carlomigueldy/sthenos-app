@@ -4,7 +4,7 @@
     
     <router-view/>
     
-    <v-overlay :value="loading">
+    <v-overlay :value="authLoading">
       <v-progress-circular 
         indeterminate size="64">
       </v-progress-circular>
@@ -22,7 +22,7 @@ export default {
   },
   
   computed: mapGetters([
-    'loading'
+    'authLoading'
   ]),
   
   methods: mapActions([

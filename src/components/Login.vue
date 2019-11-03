@@ -15,7 +15,7 @@
         type="password" 
         v-model="password">
         </v-text-field>
-        <div v-if="loggedIn">
+        <div v-if="authLoggedIn">
           <v-btn
           block
           color="error"
@@ -43,8 +43,8 @@ import { mapActions, mapGetters } from 'vuex'
 
 export default {
   computed: mapGetters([
-    'loggedIn', 
-    'loading'
+    'authLoggedIn', 
+    'authLoading'
   ]),
 
   data: () => ({

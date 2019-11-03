@@ -1,5 +1,6 @@
 import axios from 'axios'
 import router from '../../router'
+import { url } from '../url/root'
 
 const state = {
     user: {},
@@ -9,9 +10,9 @@ const state = {
 }
 
 const getters = {
-    loading: state => state.loading,
-    loggedIn: state => state.access_token !== null,
-    getUser: state => state.user,
+    authLoading: state => state.loading,
+    authLoggedIn: state => state.access_token !== null,
+    authGetUser: state => state.user,
 }
 
 const actions = {
@@ -23,7 +24,7 @@ const actions = {
     async registerUser({ dispatch }, form) {
         state.loading = true
         try {
-            const res = await axios.post(`${state.url}/api/auth/register`, {
+            const res = await axios.post(`${url}/api/auth/register`, {
                 name: form.name,
                 email: form.email,
                 password: form.password,
@@ -61,16 +62,17 @@ const actions = {
      * @param { email, password } credentials 
      * @return void
      */
-    async retrieveToken({ commit }, credentials) {
+    async retrieveToken({ commit, dispatch }, credentials) {
         try {
             state.loading = true
-            const res = await axios.post(`${state.url}/api/auth/login`, {
+            const res = await axios.post(`${url}/api/auth/login`, {
                 email: credentials.email,
                 password: credentials.password,
             })
             localStorage.setItem('access_token', res.data.access_token)
             console.log('You have logged in successfully!', res.data)
             commit('storeToken', res.data.access_token)
+            dispatch('fetchUser', res.data.access_token)
             router.push('/')
             return true
         } catch (err) {
@@ -88,7 +90,7 @@ const actions = {
     async destroyToken({ commit }) {
         try {
             state.loading = true
-            const res = await axios.post(`${state.url}/api/auth/logout`, {}, {
+            const res = await axios.post(`${url}/api/auth/logout`, {}, {
                 headers: { 'Authorization': `Bearer ${state.access_token}` }
             })
             localStorage.removeItem('access_token')
@@ -106,7 +108,7 @@ const actions = {
      */
     async fetchUser({ commit }, access_token) {
         state.loading = true
-        const res = await axios.post(`${state.url}/api/auth/me`, {}, { 
+        const res = await axios.post(`${url}/api/auth/me`, {}, { 
             headers: { 'Authorization': `Bearer ${access_token}` } 
         })
 
