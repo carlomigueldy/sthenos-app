@@ -27,10 +27,12 @@ export default {
   
   methods: mapActions([
       'checkToken',
+      'fetchProducts',
   ]),
   
   created() {
     this.checkToken()
+    this.fetchProducts()
   },
 }
 </script>
